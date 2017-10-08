@@ -23,7 +23,7 @@ Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):en
                  num_labels, (hidden_layer_size + 1));
 
 % Setup some useful variables
-m = size(X, 1);
+m = size(X, 1);   % number of example
          
 % You need to return the following variables correctly 
 J = 0;
@@ -62,14 +62,26 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+X = [ones(m,1) X];
 
+for i = 1: m,
+H = sigmoid(Theta2 * [ones(1,1) ; sigmoid(Theta1 * X(i, :)')]);
+yi = zeros(num_labels, 1);
+yi(y(i)) = 1;
+J_i = sum(log(H) .* ( -yi) - (1 - yi) .* log(1 - H));
+J = J + J_i;
+end;
 
+J = J / m;
 
+% Regularized cost function
 
+Theta1_i = Theta1(:,2:(input_layer_size + 1));
+Theta1_i = Theta1_i .^ 2;
+Theta2_i = Theta2(:,2:(hidden_layer_size + 1));
+Theta2_i = Theta2_i .^ 2;
 
-
-
-
+J = J + lambda / 2 / m * (sum(sum(Theta1_i)) + sum(sum(Theta2_i)));
 
 
 

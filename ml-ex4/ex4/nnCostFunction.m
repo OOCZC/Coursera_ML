@@ -62,6 +62,11 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+delta_2 = zeros(hidden_layer_size, 1);      %delta(2)
+delta_3 = zeros(num_labels, 1);             %delta(3)
+delta_1_sum = zeros(size(Theta1));          %Delta(1)
+delta_2_sum = zeros(size(Theta2));          %Delta(2)
+
 X = [ones(m,1) X];
 
 for i = 1: m,
@@ -70,9 +75,19 @@ yi = zeros(num_labels, 1);
 yi(y(i)) = 1;
 J_i = sum(log(H) .* ( -yi) - (1 - yi) .* log(1 - H));
 J = J + J_i;
+
+delta_3 = H - yi;
+delta_2 = (Theta2(:,2:end)' * delta_3) .* sigmoidGradient(Theta1 * X(i, :)');
+delta_1_sum = delta_1_sum + delta_2 * X(i, :);
+delta_2_sum = delta_2_sum + delta_3 * [ones(1,1) ; sigmoid(Theta1 * X(i, :)')]';
 end;
 
 J = J / m;
+
+Theta1_grad = delta_1_sum ./ m + lambda * Theta1 ./ m;
+Theta1_grad(:,1) = delta_1_sum(:,1) ./ m;
+Theta2_grad = delta_2_sum ./ m + lambda * Theta2 ./ m;
+Theta2_grad(:,1) = delta_2_sum(:,1) ./ m;
 
 % Regularized cost function
 

@@ -21,7 +21,8 @@ grad = zeros(size(theta));
 
 J = (sum((X * theta - y) .^ 2) + lambda * sum(theta(2:end) .^ 2))/2/m;
 
-grad = sum((X * theta - y) .* X)' / m;
+grad = sum((X * theta - y) .* X, 1)' / m;
+%grad = sum((X * theta - y) .* X)' / m; 当grad为1 * 2矩阵时，这样写有Bug，会把横向的相加。
 grad(2:end) = grad(2:end) + theta(2:end) * lambda / m;
 
 

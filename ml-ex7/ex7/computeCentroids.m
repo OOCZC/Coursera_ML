@@ -26,6 +26,14 @@ centroids = zeros(K, n);
 % Note: You can use a for-loop over the centroids to compute this.
 %
 
+centroids_num = zeros(1, K);
+for i = 1: m,
+    centroids(idx(i), :) += X(i, :);
+    centroids_num(idx(i)) += 1;
+end;
+for i = 1: K,
+   centroids(i, :) = centroids(i, :) ./ centroids_num(i);
+end;
 
 
 
